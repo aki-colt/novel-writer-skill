@@ -1,6 +1,6 @@
 ---
 name: novel-writer
-description: Guides agents in writing Chinese novels (中文小说/网文/长篇小说) with strict outline and character-profile management. Enforces a root-level global outline split by volumes (全局大纲.md), a character profile folder (人物设定/) with one file per character, per-volume outlines split by chapters (卷大纲.md), and bidirectional consistency between draft chapters and outlines. Volume directories follow the 第N卷卷名 naming convention. Every finished chapter must be word-counted with wc and fall within 2500-4500 characters. Use when writing, editing, restructuring, or extending Chinese novels with a multi-volume / multi-chapter structure (写小说, 写章节, 新增卷, 修改剧情, 维护大纲, 维护角色设定).
+description: Guides agents in writing Chinese novels (中文小说/网文/长篇小说) with strict outline, character-profile, and writing-style management. Enforces a root-level global outline split by volumes (全局大纲.md), a writing style file (文风.md), a character profile folder (人物设定/) with one file per character, per-volume outlines split by chapters (卷大纲.md), and bidirectional consistency between draft chapters and outlines. Volume directories follow the 第N卷卷名 naming convention. Every finished chapter must be word-counted with wc and fall within 3000-5000 characters, then pass an isolated sub-agent review. Use when writing, editing, restructuring, or extending Chinese novels with a multi-volume / multi-chapter structure (写小说, 写章节, 新增卷, 修改剧情, 维护大纲, 维护角色设定, 维护文风).
 ---
 
 # 中文小说写作规范 (novel-writer)
@@ -14,6 +14,7 @@ description: Guides agents in writing Chinese novels (中文小说/网文/长篇
 ```
 小说根目录/
 ├── 全局大纲.md            # 必需：整本小说的总大纲，按卷分割
+├── 文风.md                # 必需：小说文风设定文件
 ├── 人物设定/              # 必需：角色设定文件夹
 │   ├── 主角名.md
 │   ├── 配角名.md
@@ -69,7 +70,39 @@ description: Guides agents in writing Chinese novels (中文小说/网文/长篇
 
 **严禁**：在未询问用户的情况下，自行选择"采纳新剧情"或"忽略新剧情"。
 
-## 二、卷编写规范
+## 二、文风设置规范
+
+### 文风文件（`文风.md`）
+
+- 必须存在于小说根目录，文件名为 `文风.md`
+- 在开始书写任何章节正文之前，**必须**先读取该文件
+- 若 `文风.md` 不存在，**禁止**开始写正文；必须先向用户询问文风信息
+
+### 向用户询问文风信息的流程
+
+当 `文风.md` 不存在时，必须向用户提出以下问题（至少覆盖以下维度），得到足够明确的回答后才能创建文件：
+
+1. **整体语言风格**：古雅/白话/通俗/网文风/严肃文学风？
+2. **叙事视角**：第一人称/第三人称有限/第三人称全知？
+3. **描写偏好**：偏重环境渲染还是偏重动作对白？心理描写的深度如何？
+4. **节奏特征**：快节奏推进/慢节奏铺陈？章末是否留悬念？
+5. **对话风格**：口语化/书面化？是否使用方言或特定时代用语？
+6. **修辞习惯**：偏好何种修辞？排斥何种修辞？比喻的密度和类型？
+7. **参考作品**：是否有希望对标或规避的同类作品？
+
+**必须**将用户的回答整理为结构化的 `文风.md` 文件，至少包含以下章节：
+
+- `## 整体风格`
+- `## 叙事视角与口吻`
+- `## 描写偏好`
+- `## 节奏特征`
+- `## 对话风格`
+- `## 修辞与语言禁忌`
+- `## 参考与规避`
+
+文风文件创建后，后续写章节正文前**必须重读**，确保写作风格与之保持一致。
+
+## 三、卷编写规范
 
 ### 新增卷的工作流（强制顺序）
 
@@ -92,7 +125,7 @@ description: Guides agents in writing Chinese novels (中文小说/网文/长篇
   - **主旨**：本章承担的主题作用（推动主线、塑造人物、铺垫伏笔等）
   - **节奏**：开端、转折、结尾的安排
 
-## 三、章节编写规范
+## 四、章节编写规范
 
 ### 章节正文与卷大纲的强制对应
 
@@ -100,8 +133,10 @@ description: Guides agents in writing Chinese novels (中文小说/网文/长篇
 
 执行流程：
 
-1. **写作前**：读取 `卷大纲.md` 中对应章节的描述
-2. **写作中**：严格按照卷大纲的剧情走向、节奏推进；细节、对话、描写可自由发挥，但骨架不可偏离
+1. **写作前**：
+   - 读取 `卷大纲.md` 中对应章节的描述
+   - **读取 `文风.md`，确认文风要求**
+2. **写作中**：严格按照卷大纲的剧情走向、节奏推进；细节、对话、描写可自由发挥，但骨架不可偏离；**语言风格必须符合文风.md的设定**
 3. **写作后**：核对正文与卷大纲是否对应；不对应则按"反向同步规则"处理
 
 ### 用户修改正文的反向同步规则
@@ -130,11 +165,11 @@ description: Guides agents in writing Chinese novels (中文小说/网文/长篇
    wc -m "第1卷某卷名/第3章章节标题.md"
    ```
 
-2. 检查字符数是否在 **2500-4500** 之间
+2. 检查字符数是否在 **3000-5000** 之间
 3. 处理结果：
-   - **少于 2500**：扩写。补充细节描写、对话、心理活动、环境描写等，但不得偏离卷大纲
-   - **多于 4500**：精简或拆分。先尝试删减冗余描写；若内容确实承载过多剧情，与用户讨论是否拆为两章（拆章必须同步更新 `卷大纲.md`）
-   - **2500-4500 之间**：通过
+   - **少于 3000**：扩写。补充细节描写、对话、心理活动、环境描写等，但不得偏离卷大纲
+   - **多于 5000**：精简或拆分。先尝试删减冗余描写；若内容确实承载过多剧情，与用户讨论是否拆为两章（拆章必须同步更新 `卷大纲.md`）
+   - **3000-5000 之间**：通过
 
 说明：`wc -m` 统计字符数（含标点、换行）。中文小说习惯将其视为"字数"。如需排除空白字符以更精确，可用：
 
@@ -142,7 +177,84 @@ description: Guides agents in writing Chinese novels (中文小说/网文/长篇
 tr -d '[:space:]' < "第1卷某卷名/第3章章节标题.md" | wc -m
 ```
 
-## 四、写作前/写作后检查清单
+## 五、章节 Review 规范（强制）
+
+### 触发条件
+
+**每当完成一个章节的正文写入时，必须启动一个上下文隔离的子 agent 进行 review。不得跳过。**
+
+### Review 子 agent 的启动方式
+
+使用 Agent 工具启动子 agent，**必须**设置 `isolation: "worktree"` 以确保上下文隔离。子 agent 的 prompt 必须包含以下全部指令。
+
+### Review 检查项（必须全部执行）
+
+子 agent 收到章节文件路径后，按以下顺序执行检查：
+
+#### 1. 字数检查
+
+- 使用 `wc -m` 统计该章字符数
+- 结果必须在 **3000-5000** 之间
+- 若不在范围内，标记为不通过，并给出具体字数
+
+#### 2. 内容检查
+
+- 读取该卷 `卷大纲.md` 中对应章节的描述
+- 判断章节正文内容是否与卷大纲描述**相符**
+- **严禁**正文延伸到后续章节的剧情
+- **严禁**正文包含尚未在卷大纲中规划的内容
+- 若发现内容越界或偏离，标记为不通过，指出具体偏离点
+
+#### 3. 文风检查
+
+- 读取根目录 `文风.md`
+- 判断该章节正文的语言风格、叙事口吻、描写方式、对话风格等是否符合 `文风.md` 的规范
+- 若存在明显偏差，标记为不通过，指出偏差之处
+
+#### 4. AI 风格检查
+
+**此检查必须严格执行，杜绝一切 AI 风格。**
+
+检查前，可先用 humanize 技能进行初步检查。之后**必须**手动逐项检查以下 AI 风格指标：
+
+- **比喻密度**：
+  - 同一句中不允许出现 **超过 2 处** 比喻
+  - 同一章节中不允许出现 **超过 3 处** 比喻
+- **排比密度**：
+  - 同一章节中不允许出现 **超过 3 处** 排比
+- **"不是，是"句式**：
+  - **严禁**出现 "不是……是……" 这类 AI 典型句式
+
+若发现上述任何一项违规，标记为不通过，逐条列出违规位置和原文。
+
+### Review 结果处理
+
+子 agent 完成全部检查后，返回一份 Review 报告，格式如下：
+
+```
+## Review 报告：第X卷/第Y章 章节标题
+
+### 字数检查：[通过/不通过]
+- 实际字数：XXXX
+
+### 内容检查：[通过/不通过]
+- （若未通过，列出偏离点）
+
+### 文风检查：[通过/不通过]
+- （若未通过，列出偏差之处）
+
+### AI 风格检查：[通过/不通过]
+- （若未通过，逐条列出违规项及原文）
+
+### 总评：[通过/需修改]
+```
+
+**主 agent 收到 Review 报告后的处理**：
+
+- **总评为"通过"**：确认该章节完成，可继续后续工作
+- **总评为"需修改"**：根据 Review 报告中指出的问题修改章节正文，修改完成后**必须重新启动 Review 子 agent 再次检查**，直至通过
+
+## 六、写作前/写作后检查清单
 
 每次开始写作或修改章节时，按顺序检查：
 
@@ -151,22 +263,28 @@ tr -d '[:space:]' < "第1卷某卷名/第3章章节标题.md" | wc -m
 - [ ] 已读 全局大纲.md，理解全书走向
 - [ ] 已读 本卷 卷大纲.md，理解本卷剧情
 - [ ] 已读 涉及角色的 人物设定/角色名.md
+- [ ] 已读 文风.md，确认文风要求
 - [ ] 用户提到的内容与上述文件无冲突；如有冲突，已询问用户
 
 写作中：
 - [ ] 严格遵循卷大纲对该章的剧情和节奏描述
+- [ ] 语言风格符合文风.md的设定
 
 写作后：
-- [ ] 已用 wc -m 统计字数，结果在 2500-4500 之间
+- [ ] 已用 wc -m 统计字数，结果在 3000-5000 之间
+- [ ] 已启动上下文隔离的 Review 子 agent 进行检查
+- [ ] Review 报告总评为"通过"
 - [ ] 用户修改正文后，已同步修改 卷大纲.md（必要时连带人物设定、全局大纲）
-- [ ] 全局大纲、卷大纲、人物设定、章节正文四者无矛盾
+- [ ] 全局大纲、卷大纲、人物设定、文风、章节正文五者无矛盾
 ```
 
-## 五、关键禁止事项
+## 七、关键禁止事项
 
 - **禁止**在没有 `全局大纲.md` 的情况下开始写小说；应先与用户讨论并创建
+- **禁止**在没有 `文风.md` 的情况下写章节；若缺失必须先询问用户并创建
 - **禁止**在没有 `卷大纲.md` 的情况下写章节；应先与用户讨论并创建
-- **禁止**自行决定与已有大纲/设定相悖的新剧情；必须询问用户
+- **禁止**自行决定与已有大纲/设定/文风相悖的新剧情或新风格；必须询问用户
 - **禁止**保留大纲与正文不一致的状态（任一文件被修改后，必须双向同步）
 - **禁止**跳过 `wc -m` 字数检查
+- **禁止**跳过章节 Review（上下文隔离子 agent 检查）
 - **禁止**在新增卷时跳过"先讨论卷大纲再建目录"的顺序
