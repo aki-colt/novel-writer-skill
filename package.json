@@ -1,0 +1,32 @@
+{
+  "name": "novel-writer-skill",
+  "version": "1.0.0",
+  "description": "An Anthropic Agent Skill for writing Chinese novels with strict outline, character-profile, writing-style management, and mandatory chapter review.",
+  "bin": {
+    "novel-writer-skill": "./install.js"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "install.js"
+  ],
+  "scripts": {
+    "postinstall": "node install.js --silent"
+  },
+  "keywords": [
+    "anthropic",
+    "claude",
+    "agent-skill",
+    "novel",
+    "chinese-novel"
+  ],
+  "author": "qiubowen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aki-colt/novel-writer-skill.git"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -14,22 +14,40 @@
 
 完整规范见 [SKILL.md](./SKILL.md)。
 
-## 如何使用
+## 安装
 
-### Claude Code（项目级）
+### 通过 npx/npm（推荐）
 
-把整个目录复制为项目下的 `.claude/skills/novel-writer/`：
+**用户级安装**（所有项目共享）：
+
+```bash
+npx novel-writer-skill
+```
+
+**项目级安装**（仅当前项目）：
+
+```bash
+npx novel-writer-skill install --project
+```
+
+**安装到自定义路径**：
+
+```bash
+npx novel-writer-skill install --target /custom/path
+```
+
+安装后 skill 文件会被复制到对应的 `.claude/skills/novel-writer/` 目录，Claude 即可自动加载。
+
+### 手动复制
+
+**Claude Code（项目级）**：
 
 ```bash
 mkdir -p /your/novel/project/.claude/skills
 cp -r /path/to/this/repo /your/novel/project/.claude/skills/novel-writer
 ```
 
-之后在该项目中启动 Claude Code，agent 会在涉及"写小说、写章节、维护大纲"等任务时自动加载此 skill。
-
-### Claude Code（用户级）
-
-放到用户级 skills 目录，所有项目共享：
+**Claude Code（用户级）**：
 
 ```bash
 mkdir -p ~/.claude/skills
